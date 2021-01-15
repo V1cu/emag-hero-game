@@ -1,0 +1,16 @@
+{
+    "name": "vicu/emag-game",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Vicu",
+            "email": "vitalie.tabara@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Game\\": "src/Game"
+        }
+    }
+}
