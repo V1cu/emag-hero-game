@@ -1,67 +1,76 @@
 <?php
 
-namespace Game\Entities;
+namespace App\Entities;
 
-use Game\Entities\Skills\SkillAbstract;
-use Game\Helpers\LoggerHelper;
-use Game\Helpers\StatsHelper;
+use App\Entities\Skills\SkillAbstract;
+use App\Helpers\StatsHelper;
 
 /**
  * Class Entity
  *
- * @package Game\Entities
+ * @package App\Entities
  */
 class Entity
 {
     /**
-     * @var string
+     * @var string|null
      */
-    protected $name;
+    private ?string $name = null;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $health;
+    private int $health = 0;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $strength;
+    private int $strength = 0;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $defence;
+    private int $defence = 0;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $speed;
+    private int $speed = 0;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $luck;
+    private int $luck = 0;
 
     /**
-     * @var \Game\Entities\Skills\SkillAbstract[]
+     * @var \App\Entities\Skills\SkillAbstract[]
      */
-    protected $skills = [];
+    private array $skills = [];
 
     /**
      * @var bool
      */
-    protected $isAttacker = false;
+    private bool $isAttacker = false;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $damageDone = 0;
+    private int $damageDone = 0;
 
     /**
-     * @var int|float
+     * @var int
      */
-    protected $damageTaken = 0;
+    private int $damageTaken = 0;
+
+    /**
+     * Entity constructor.
+     *
+     * @param  string  $name
+     */
+    public function __construct(string $name)
+    {
+        $this->setName($name);
+    }
 
     /**
      * @return string
@@ -72,11 +81,11 @@ class Entity
     }
 
     /**
-     * @param $value
+     * @param  string  $value
      *
      * @return $this
      */
-    public function setName($value): string
+    public function setName(string $value): Entity
     {
         $this->name = $value;
 
@@ -180,6 +189,14 @@ class Entity
     }
 
     /**
+     * @return bool
+     */
+    public function hasLuck(): bool
+    {
+        return mt_rand(0, 100) <= $this->getLuck();
+    }
+
+    /**
      * @param  int|float       $min
      * @param  int|float|null  $max
      *
@@ -194,7 +211,7 @@ class Entity
     }
 
     /**
-     * @return \Game\Entities\Skills\SkillAbstract[]
+     * @return \App\Entities\Skills\SkillAbstract[]
      */
     public function getSkills(): array
     {
@@ -202,7 +219,7 @@ class Entity
     }
 
     /**
-     * @param  \Game\Entities\Skills\SkillAbstract  $skill
+     * @param  \App\Entities\Skills\SkillAbstract  $skill
      *
      * @return $this
      */
@@ -214,17 +231,17 @@ class Entity
     }
 
     /**
-     * @param  \Game\Entities\Entity  $enemy
+     * @param  \App\Entities\Entity  $enemy
      *
      * @return $this
      */
     public function useSkills(Entity $enemy): Entity
     {
-        if ( empty($this->skills) ) {
+        if (empty($this->skills)) {
             return $this;
         }
 
-        foreach ( $this->skills as $skill ) {
+        foreach ($this->skills as $skill) {
             $skill->use($this, $enemy);
         }
 
@@ -297,68 +314,5 @@ class Entity
     public function isAlive(): bool
     {
         return $this->getHealth() > 0;
-    }
-
-    /**
-     * @param  \Game\Entities\Entity  $enemy
-     *
-     * @return $this
-     * @throws \Exception
-     */
-    public function attack(Entity $enemy): Entity
-    {
-        $this->setIsAttacker(true);
-        $enemy->setIsAttacker(false);
-
-        if ( !StatsHelper::hasLuck($this->getLuck()) ) {
-            LoggerHelper::addMessage(
-                '[ATTACK] %s missed his attack!',
-                [
-                    $this->getName()
-                ]
-            );
-            return $this;
-        }
-
-        $damage = $this->getStrength() - $enemy->getDefence();
-
-        if ( $damage <= 0 ) {
-            LoggerHelper::addMessage(
-                '[ATTACK] %s did no damage to %s',
-                [
-                    $this->getName(),
-                    $enemy->getName()
-                ]
-            );
-            return $this;
-        }
-
-        $this->setDamageDone($damage);
-        $enemy->setDamageTaken($damage);
-
-        LoggerHelper::addMessage(
-            '[ATTACK] %s did %d damage to %s',
-            [
-                $this->getName(),
-                $damage,
-                $enemy->getName()
-            ]
-        );
-
-        $this->useSkills($enemy);
-        $enemy->useSkills($this);
-
-        $health = max(0, $enemy->getHealth() - $enemy->getDamageTaken());
-        $enemy->setHealth($health);
-
-        LoggerHelper::addMessage(
-            '[STATS] %s remained with %d health',
-            [
-                $enemy->getName(),
-                $health
-            ]
-        );
-
-        return $this;
     }
 }

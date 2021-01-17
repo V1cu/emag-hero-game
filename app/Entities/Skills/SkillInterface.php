@@ -1,19 +1,19 @@
 <?php
 
-namespace Game\Entities\Skills;
+namespace App\Entities\Skills;
 
-use Game\Entities\Entity;
+use App\Entities\Entity;
 
 /**
  * Interface SkillInterface
  *
- * @package Game\Entities\Skills
+ * @package App\Entities\Skills
  */
 interface SkillInterface
 {
     /**
-     * @param  \Game\Entities\Entity  $entity
-     * @param  \Game\Entities\Entity  $enemy
+     * @param  \App\Entities\Entity  $entity
+     * @param  \App\Entities\Entity  $enemy
      *
      * @return bool
      */

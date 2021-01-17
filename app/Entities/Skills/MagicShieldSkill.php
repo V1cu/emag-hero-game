@@ -1,38 +1,36 @@
 <?php
 
-namespace Game\Entities\Skills;
+namespace App\Entities\Skills;
 
-use Game\Entities\Entity;
-use Game\Helpers\LoggerHelper;
+use App\Entities\Entity;
+use App\Log\Logger;
 
 /**
  * Class MagicShieldSkill
  *
- * @package Game\Entities\Skills
+ * @package App\Entities\Skills
  */
 class MagicShieldSkill extends SkillAbstract
 {
     /**
-     * MagicShieldSkill constructor.
-     *
-     * @throws \Exception
+     * @var string
      */
-    public function __construct()
-    {
-        $this->setName('Magic Shield');
-        $this->setDesc('Takes only half of the usual damage when an enemy attacks.');
-        $this->setLuck(20);
-    }
+    protected string $name = 'Magic Shield';
 
     /**
-     * @param  \Game\Entities\Entity  $entity
-     * @param  \Game\Entities\Entity  $enemy
+     * @var string|null
+     */
+    protected ?string $desc = 'Takes only half of the usual damage when an enemy attacks.';
+
+    /**
+     * @param  \App\Entities\Entity  $entity
+     * @param  \App\Entities\Entity  $enemy
      *
      * @return bool
      */
     public function use(Entity $entity, Entity $enemy): bool
     {
-        if ( $entity->isAttacker() || !$this->hasLuck() ) {
+        if ($entity->isAttacker() || ! $this->hasLuck()) {
             return false;
         }
 
@@ -41,14 +39,14 @@ class MagicShieldSkill extends SkillAbstract
         $entity->setDamageTaken($skillDamage);
         $enemy->setDamageDone($skillDamage);
 
-        LoggerHelper::addMessage(
+        Logger::addMessage(
             '[SKILL] %s used %s and blocked %d damage out of %d from %s!',
             [
                 $entity->getName(),
                 $this->getName(),
                 $skillDamage,
                 $initialDamage,
-                $enemy->getName()
+                $enemy->getName(),
             ]
         );
 

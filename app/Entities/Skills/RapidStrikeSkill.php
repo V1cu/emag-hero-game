@@ -1,38 +1,36 @@
 <?php
 
-namespace Game\Entities\Skills;
+namespace App\Entities\Skills;
 
-use Game\Entities\Entity;
-use Game\Helpers\LoggerHelper;
+use App\Entities\Entity;
+use App\Log\Logger;
 
 /**
  * Class RapidStrikeSkill
  *
- * @package Game\Entities\Skills
+ * @package App\Entities\Skills
  */
 class RapidStrikeSkill extends SkillAbstract
 {
     /**
-     * RapidStrikeSkill constructor.
-     *
-     * @throws \Exception
+     * @var string
      */
-    public function __construct()
-    {
-        $this->setName('Rapid Strike');
-        $this->setDesc('Strike twice while it\'s his turn to attack.');
-        $this->setLuck(10);
-    }
+    protected string $name = 'Rapid Strike';
 
     /**
-     * @param  \Game\Entities\Entity  $entity
-     * @param  \Game\Entities\Entity  $enemy
+     * @var string|null
+     */
+    protected ?string $desc = 'Strike twice while it\'s his turn to attack.';
+
+    /**
+     * @param  \App\Entities\Entity  $entity
+     * @param  \App\Entities\Entity  $enemy
      *
      * @return bool
      */
     public function use(Entity $entity, Entity $enemy): bool
     {
-        if ( !$entity->isAttacker() || !$this->hasLuck() ) {
+        if ( ! $entity->isAttacker() || ! $this->hasLuck()) {
             return false;
         }
 
@@ -41,13 +39,13 @@ class RapidStrikeSkill extends SkillAbstract
         $entity->setDamageDone($skillDamage);
         $enemy->setDamageTaken($skillDamage);
 
-        LoggerHelper::addMessage(
+        Logger::addMessage(
             '[SKILL] %s used %s and did %d damage to %s!',
             [
                 $entity->getName(),
                 $this->getName(),
                 $initialDamage,
-                $enemy->getName()
+                $enemy->getName(),
             ]
         );
 

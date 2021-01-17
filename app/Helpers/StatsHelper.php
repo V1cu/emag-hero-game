@@ -1,11 +1,11 @@
 <?php
 
-namespace Game\Helpers;
+namespace App\Helpers;
 
 /**
  * Class StatsHelper
  *
- * @package Game\Helpers
+ * @package App\Helpers
  */
 class StatsHelper
 {
@@ -26,16 +26,6 @@ class StatsHelper
             return intval($min);
         }
 
-        return rand($min, $max);
-    }
-
-    /**
-     * @param  int|float  $val
-     *
-     * @return bool
-     */
-    public static function hasLuck($val): bool
-    {
-        return $val >= rand(0, 100);
+        return mt_rand($min, $max);
     }
 }
